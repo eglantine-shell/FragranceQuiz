@@ -600,59 +600,29 @@
     }
     /* -------- 核心：卡片改成竖向长方形 -------- */
     .resultCard{
-      width: calc(100% - 6px);
+      width: calc(100% - 20px); 
       max-width: 100%;
-      margin: 0 auto;
+      margin: 0 auto 0 2px;
       aspect-ratio: auto !important;
       min-height: 460px;
       border-radius: 16px;
       overflow: hidden;
       position: relative;
       box-sizing: border-box;
-      background: #f9f8f6; /* 先给一层白底，右侧一定封住 */
-      box-shadow: inset 0 0 0 1px rgba(80,70,55,.04); /* 极淡内边，边界更稳 */
+      background: #f9f8f6;
+      box-shadow: inset 0 0 0 1px rgba(80,70,55,.04);
     }
-
-    /* 用 resultCard 伪元素统一画纸纹，避免右侧断开 */
-    .resultCard::before{
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      pointer-events: none;
-      z-index: 0;
-
-      background:
-        repeating-linear-gradient(
-          0deg,
-          rgba(120,110,95,.022) 0px,
-          rgba(120,110,95,.022) 1px,
-          rgba(255,255,255,0) 1px,
-          rgba(255,255,255,0) 9px
-        ),
-        linear-gradient(
-          to bottom,
-          rgba(255,255,255,.70),
-          rgba(255,255,255,.92)
-        );
-    }
-
     .resultInner{
       width: 100%;
       max-width: 100%;
       box-sizing: border-box;
-
       padding: 14px 14px 22px;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
       gap: 8px;
-
-      /* 关键：内容层压在纸纹上 */
       position: relative;
       z-index: 1;
-
-      /* 防止内层自己又有背景导致边缘错层 */
       background: transparent;
     }
     .resultLabel,
