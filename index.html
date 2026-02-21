@@ -17,7 +17,6 @@
       --radius: 18px;
       --ease: cubic-bezier(.2,.8,.2,1);
     }
-
     *{ box-sizing: border-box; }
     body{
       margin:0;
@@ -29,13 +28,11 @@
       font-family: "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", serif;
       letter-spacing: .2px;
     }
-
     .app{
       width: min(980px, 92vw);
       margin: 0 auto;
       padding: 28px 0 48px;
     }
-
     .topbar{
       display:flex;
       align-items:center;
@@ -45,21 +42,18 @@
       color: var(--muted);
       font-size: 14px;
     }
-
     .brand{
       display:flex;
       align-items:center;
       gap:10px;
       user-select:none;
     }
-
     .seal{
       width: 18px; height: 18px;
       border-radius: 4px;
       background: rgba(150, 25, 25, .65);
       box-shadow: 0 6px 18px var(--shadow);
     }
-
     .stage{
       position: relative;
       border: 1px solid var(--stroke);
@@ -68,14 +62,12 @@
       box-shadow: 0 16px 38px var(--shadow);
       overflow: hidden;
     }
-
     .view{
       min-height: 620px;
       padding: 30px;
       display:none;
     }
     .view.active{ display:block; }
-
     /* --- Cover --- */
     .coverWrap{
       display:grid;
@@ -87,7 +79,6 @@
     @media (max-width: 860px){
       .coverWrap{ grid-template-columns: 1fr; }
     }
-
     .bookMock{
       position: relative;
       width: min(420px, 78vw);
@@ -144,7 +135,6 @@
       font-size: 14px;
       letter-spacing: 1px;
     }
-
     .intro{
       padding: 8px 4px;
     }
@@ -159,9 +149,13 @@
       color: var(--muted);
       line-height: 1.7;
       font-size: 15px;
+      text-align: center;
     }
-
-    .btnRow{ display:flex; gap:12px; flex-wrap:wrap; margin-top: 18px; }
+    .btnRow{ 
+      display: flex; 
+      justify-content: center; 
+      margin-top: 18px; 
+    }
     .btn{
       appearance:none;
       border: 1px solid var(--stroke);
@@ -183,7 +177,6 @@
       border-color: rgba(30,27,22,.92);
     }
     .btn.primary:hover{ background: rgba(30,27,22,.86); }
-
     /* --- Transition overlay (book flip) --- */
     .overlay{
       position:absolute;
@@ -195,7 +188,6 @@
       z-index: 9;
     }
     .overlay.show{ display:flex; }
-
     .flip{
       width: min(520px, 86vw);
       aspect-ratio: 4/3;
@@ -251,7 +243,6 @@
       45%{ transform: rotateY(-65deg); opacity: 1; }
       100%{ transform: rotateY(-120deg); opacity: 0; }
     }
-
     /* --- Quiz --- */
     .quizWrap{
       display:grid;
@@ -284,7 +275,6 @@
       border-radius: 999px;
       transition: width .35s var(--ease);
     }
-
     .card{
       border: 1px solid var(--stroke);
       border-radius: var(--radius);
@@ -321,7 +311,6 @@
     }
     .opt:hover{ background: rgba(255,255,255,.70); border-color: rgba(30,27,22,.22); }
     .opt:active{ transform: translateY(1px); }
-
     .slideOut{
       animation: slideOut .22s var(--ease) forwards;
     }
@@ -335,7 +324,6 @@
       from { transform: translateX(10px); opacity: 0; }
       to { transform: translateX(0); opacity: 1; }
     }
-
     /* --- Loading --- */
     .loading{
       display:flex;
@@ -368,7 +356,6 @@
       letter-spacing: 2px;
       font-size: 14px;
     }
-
     /* --- Result --- */
     .resultWrap{
       display:grid;
@@ -377,7 +364,6 @@
       min-height: 620px;
       align-content:start;
     }
-
     .resultCard{
       width: min(540px, 92vw);
       aspect-ratio: 1 / 1;
@@ -594,11 +580,10 @@
       width: 100%;
       max-width: 100%;
       margin: 0 auto;
-      padding: 10px 6px 8px 6px;         /* 左右边距给卡片腾空间 */
+      padding: 10px 6px 8px 6px; 
       border-radius: 18px;
-      overflow: hidden;              /* 防止内部视觉溢出 */
+      overflow: hidden; 
     }
-    /* -------- 核心：卡片改成竖向长方形 -------- */
     .resultCard{
       width: calc(100% - 54px); 
       max-width: 100%;
@@ -707,7 +692,7 @@
       padding-bottom: 2px;
     }
     .resultMeta{
-      width: calc(100% - 48px);
+      width: calc(100% - 60px);
       max-width: 100% !important;
       margin: 12px auto 0;
       padding: 0;
@@ -783,7 +768,6 @@
           </div>
 
           <div class="intro">
-            <h2>香方测试</h2>
             <p class="lead">
               布局、立意、选材、配伍、醒香、题词、品味。<br/>
               七问以后，与香相逢。
@@ -851,8 +835,7 @@
           <div class="resultMeta" id="resultDesc"></div>
 
           <div class="footerBtns">
-            <button class="btn" id="btn-retry">再测一次</button>
-            <button class="btn primary" id="btn-save">保存卡片</button>
+            <button class="btn" id="btn-retry">重开香笺</button>
           </div>
         </div>
       </section>
@@ -1194,11 +1177,6 @@ const questions = [
       renderQuestion();
       $("#topHint").textContent = "正在作答";
     });
-
-    $("#btn-save").addEventListener("click", () => {
-      alert("V1 暂不支持一键导出图片。\\n\\n你可以：\\n1) 手机截图保存结果卡片\\n2) 电脑用系统截图工具截取卡片区域\\n\\nV2 将接入 html2canvas 生成 1080×1080 PNG。");
-    });
-
     resetScores();
   </script>
 </body>
