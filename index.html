@@ -570,7 +570,7 @@
       color: var(--muted);
     }
     .intro{
-      margin-top: -28px;
+      margin-top: -8px;
     }
     .intro .lead{
       margin-top: 0;
@@ -863,7 +863,6 @@
       C: "c_spring_night",
       J: "j_lignum",
     };
-
     const scents = [
       {
         id: SCENT.E,
@@ -978,114 +977,99 @@
           "冥想、阅读、创作。心神集中，灵感清明。"
       },
     ];
+    const questions = [
+      { questionText: "祝你早上好，中午好，晚上好。此时你在——", options: [
+        { label: "点灯，世界便在明亮的光晕里倒退", scores: { [SCENT.E]: 2, [SCENT.Y]: 1 } },
+        { label: "镜前，想今日将有良宴会，欢乐难具陈", scores: { [SCENT.C]: 2, [SCENT.H]: 1 } },
+        { label: "书房，书桌，是我阡陌纵横的花园", scores: { [SCENT.J]: 2, [SCENT.N]: 1 } },
+        { label: "窗边，玻璃内外总会有看风景的人", scores: { [SCENT.X]: 2, [SCENT.N]: 1 } },
+      ]},
 
+      { questionText: "香的意绪堪堪崭露头角，你想和它说——", options: [
+        { label: "任凭世界嘈杂，你我在嘈杂中静如灰尘", scores: { [SCENT.E]: 2, [SCENT.Y]: 1 } },
+        { label: "去春天，去耸人听闻、花枝招展的春天！", scores: { [SCENT.H]: 2, [SCENT.C]: 1 } },
+        { label: "我们渡过清醒的时刻，然后不要道别", scores: { [SCENT.N]: 2, [SCENT.J]: 1 } },
+        { label: "静夜的温暖能否孵化答案？我不要答案", scores: { [SCENT.S]: 2, [SCENT.Y]: 1 } },
+      ]},
 
-// 布局、立意、选材、配伍、醒香、题词、品味。
-const questions = [
-  { questionText: "是春夜吗，抑或冬日午后？祝你早上好，中午好，晚上好。你在哪里呀？", options: [
-    { label: "帷帐将合，床头只留一盏小灯，香气轻轻守在枕边", scores: { [SCENT.E]: 2, [SCENT.Y]: 1 } },
-    { label: "镜前更衣，衣香未散，像为一场未到的夜宴做准备", scores: { [SCENT.C]: 2, [SCENT.H]: 1 } },
-    { label: "案头是书与纸，灯下一坐，宁愿先让心落在字里", scores: { [SCENT.J]: 2, [SCENT.N]: 1 } },
-    { label: "窗外冷意入骨，屋内孤灯未灭，静到仿佛能听见雪落", scores: { [SCENT.X]: 2, [SCENT.N]: 1 } },
-  ]},
+      { questionText: "选一段回忆研成细末吧，于是你想起了——", options: [
+        { label: "亲爱的朋友，你的眼睛有奇异的灵光", scores: { [SCENT.S]: 2, [SCENT.H]: 1 } },
+        { label: "为了心爱的人，我愿和永恒的时间开战", scores: { [SCENT.E]: 2, [SCENT.C]: 1 } },
+        { label: "家中夜深坐，灯下，还应说着远行人", scores: { [SCENT.Y]: 2, [SCENT.E]: 1 } },
+        { label: "我与我，爬上屋顶看新月，走进花园摘苹果", scores: { [SCENT.X]: 2, [SCENT.N]: 1 } },
+      ]},
 
-  { questionText: "若此时一缕香在博山炉上崭露头角，你想和它说些什么吗？", options: [
-    { label: "把一整天的嘈杂关在门外，只求此刻心绪慢慢安稳下来", scores: { [SCENT.E]: 2, [SCENT.Y]: 1 } },
-    { label: "把仪态与气场拾起来，端庄而耀眼，好好走到灯下去", scores: { [SCENT.H]: 2, [SCENT.C]: 1 } },
-    { label: "让头脑清亮一点，在醒与梦之间，看清一件难以启齿的事", scores: { [SCENT.N]: 2, [SCENT.J]: 1 } },
-    { label: "不求答案，只想有一股温热在旁边陪着，不必多说话", scores: { [SCENT.S]: 2, [SCENT.Y]: 1 } },
-  ]},
+      { questionText: "请相信气味有颜色，那么，你看见了——", options: [
+        { label: "冷白与淡蓝：却下水晶帘，玲珑望秋月", scores: { [SCENT.X]: 2, [SCENT.N]: 1 } },
+        { label: "绯红与浅金：唯有牡丹真国色，花开时节动京城", scores: { [SCENT.C]: 2, [SCENT.H]: 1 } },
+        { label: "栗色与姜黄：有约不来过夜半，闲敲棋子落灯花", scores: { [SCENT.S]: 2, [SCENT.E]: 1 } },
+        { label: "苍灰与烟黛：西北望长安，可怜无数山。", scores: { [SCENT.J]: 2, [SCENT.N]: 1 } },
+      ]},
 
-  { questionText: "要把哪一段回忆研成细末，调和进这一炉属于你的香中？", options: [
-    { label: "与几位最熟的朋友：人不多，足够把夜坐满，又不至于喧哗", scores: { [SCENT.S]: 2, [SCENT.H]: 1 } },
-    { label: "与床边那个人：不需多言，靠近一点，气息就彼此交织", scores: { [SCENT.E]: 2, [SCENT.C]: 1 } },
-    { label: "与整个家：灯光、脚步声、有人张罗，有人等你，像被缓缓接住", scores: { [SCENT.Y]: 2, [SCENT.E]: 1 } },
-    { label: "与自己：无人打扰，连呼吸都慢下来，像回到体内深处", scores: { [SCENT.X]: 2, [SCENT.N]: 1 } },
-  ]},
+      { questionText: "香是一丝一缕，或者如山如海，你希望它——", options: [
+        { label: "缥缈如梦幻泡影，如在秦淮河畔，只见烟笼寒水月笼沙", scores: { [SCENT.H]: 2, [SCENT.C]: 1 } },
+        { label: "在万人丛中握过你的手，使我衣袖三年香", scores: { [SCENT.E]: 2, [SCENT.Y]: 1 } },
+        { label: "凝定如古时的屏风，又在街灯亮起时溶入夜和记忆", scores: { [SCENT.J]: 2, [SCENT.N]: 1 } },
+        { label: "像弥天大雾，像天涯芳草，以及一整个春天的桃花", scores: { [SCENT.X]: 2, [SCENT.S]: 1 } },
+      ]},
 
-  { questionText: "请想象你能看见气味的颜色吧——此时此刻，你看见的是哪一种？", options: [
-    { label: "冷白与淡蓝：像雪气、龙脑与清风，干净到几乎有点锋利", scores: { [SCENT.X]: 2, [SCENT.N]: 1 } },
-    { label: "绯与浅金：花瓣、酒意与耳畔轻声，华丽却不显得轻浮", scores: { [SCENT.C]: 2, [SCENT.H]: 1 } },
-    { label: "蜜色与木纹：旧书皮、茉莉与一点蜂蜡光，温润、儒雅又耐闻", scores: { [SCENT.S]: 2, [SCENT.E]: 1 } },
-    { label: "灰与烟影：香灰、药意和细细上升的火线，带着仪式感与分量", scores: { [SCENT.J]: 2, [SCENT.N]: 1 } },
-  ]},
+      { questionText: "如果请你为这一炉香题词，你会名之为——", options: [
+        { label: "“暗香”——疏影横斜月黄昏", scores: { [SCENT.X]: 2, [SCENT.J]: 1 } },
+        { label: "“竹月”——但少闲人如我耳", scores: { [SCENT.N]: 2, [SCENT.X]: 1 } },
+        { label: "“鬓影”——暗指遥山学画眉", scores: { [SCENT.H]: 2, [SCENT.S]: 1 } },
+        { label: "“暖灯”——大家沉醉对芳筵", scores: { [SCENT.Y]: 2, [SCENT.E]: 1 } },
+      ]},
 
-  { questionText: "香气正似花骨朵呢，你想让它在哪里绽放？", options: [
-    { label: "熏在衣襟与发梢：只有靠近的人才闻见，是得体又克制的亲近", scores: { [SCENT.H]: 2, [SCENT.C]: 1 } },
-    { label: "留在床头小几：只要自己闻得到，就像枕边轻轻说的一句安慰", scores: { [SCENT.E]: 2, [SCENT.Y]: 1 } },
-    { label: "安在案头一角：像给自己立一条看不见的界线，静坐片刻心就稳了", scores: { [SCENT.J]: 2, [SCENT.N]: 1 } },
-    { label: "任它在屋子里慢慢铺开：像一层薄薄的空气，把整晚都罩住", scores: { [SCENT.X]: 2, [SCENT.S]: 1 } },
-  ]},
-
-  { questionText: "给它取个名字吧，一闪念是一滴墨，请你为这一炉香题词——", options: [
-    { label: "“雪夜有暗香”——清冷到底，却总留一线不言说的希望", scores: { [SCENT.X]: 2, [SCENT.J]: 1 } },
-    { label: "“竹林月色”——醒与醉之间，清谈一场，倦极了也还清醒", scores: { [SCENT.N]: 2, [SCENT.X]: 1 } },
-    { label: "“衣香入骨”——华贵与分寸并存，像才情压住所有浮艳", scores: { [SCENT.H]: 2, [SCENT.S]: 1 } },
-    { label: "“家中暖灯”——有人走动，有人在等你回来，心自然就软了", scores: { [SCENT.Y]: 2, [SCENT.E]: 1 } },
-  ]},
-
-  { questionText: "所谓相逢，你识香时，香也识你，烟气里的你：", options: [
-    { label: "温暖而被照料：纯真、柔软，愿意被保护，也愿意去照亮别人", scores: { [SCENT.Y]: 2, [SCENT.E]: 1 } },
-    { label: "端庄而耀眼：才情自持，华贵，却始终知道自己的分寸", scores: { [SCENT.H]: 2, [SCENT.C]: 1 } },
-    { label: "清醒而纵情：知道自己在做什么，也愿意为之承担后果", scores: { [SCENT.N]: 2, [SCENT.J]: 1 } },
-    { label: "华丽而危险：欲望与美都不遮掩，像一场只在今夜发生的春宵", scores: { [SCENT.C]: 2, [SCENT.E]: 1 } },
-  ]},
-];
-
-
+      { questionText: "所谓相逢，香也识你。它会看见——", options: [
+        { label: "冬天的早晨洁白，人的天真之心没有止境", scores: { [SCENT.Y]: 2, [SCENT.E]: 1 } },
+        { label: "再贫瘠的土地上，也总会长出最后一朵玫瑰", scores: { [SCENT.H]: 2, [SCENT.C]: 1 } },
+        { label: "清醒透彻者，往往懂得甚于一切众生的哀愁", scores: { [SCENT.N]: 2, [SCENT.J]: 1 } },
+        { label: "看见恋人们相聚狂欢的国王，从此不理会他的王国", scores: { [SCENT.C]: 2, [SCENT.E]: 1 } },
+      ]},
+    ];
     // tie-break: if highest score ties, prefer Q7's +2 scent
     function pickWinner(){
       const entries = Object.entries(state.scores); // [ [id, score], ... ]
       let max = -Infinity;
       for (const [, v] of entries) max = Math.max(max, v);
-
       const tied = entries.filter(([, v]) => v === max).map(([k]) => k);
       if (tied.length === 1) return tied[0];
-
       // Q7 chosen option's main scent (the +2 one)
       const q7 = questions[questions.length - 1];
       const chosenIndex = state.answers[questions.length - 1];
       const chosenScores = q7?.options?.[chosenIndex]?.scores || {};
       const q7Main = Object.keys(chosenScores).find(k => chosenScores[k] === 2);
-
       if (q7Main && tied.includes(q7Main)) return q7Main;
-
       // fallback: stable order
       const priority = [SCENT.E, SCENT.H, SCENT.S, SCENT.X, SCENT.N, SCENT.Y, SCENT.C, SCENT.J];
       return tied.sort((a,b) => priority.indexOf(a) - priority.indexOf(b))[0];
     }
 
     const state = { idx: 0, scores: {}, answers: [], loadingMs: 1900 };
-
     const $ = (sel) => document.querySelector(sel);
     const views = { cover: $("#view-cover"), quiz: $("#view-quiz"), loading: $("#view-loading"), result: $("#view-result") };
     const overlay = $("#overlay");
     const qCard = $("#qCard"), qTitle = $("#qTitle"), qOptions = $("#qOptions");
     const progressText = $("#progressText"), progressBar = $("#progressBar");
-
     function showView(name){
       Object.values(views).forEach(v => v.classList.remove("active"));
       views[name].classList.add("active");
     }
-
     function resetScores(){
       state.scores = {};
       for (const s of scents) state.scores[s.id] = 0;
       state.answers = [];
       state.idx = 0;
     }
-
     function showFlipThen(fn){
       overlay.classList.add("show");
       setTimeout(() => { overlay.classList.remove("show"); fn?.(); }, 1100);
     }
-
     function updateProgress(){
       const total = questions.length;
       progressText.textContent = `${state.idx + 1}/${total}`;
       progressBar.style.width = `${(state.idx / total) * 100}%`;
     }
-
     function renderQuestion(){
       updateProgress();
       const q = questions[state.idx];
@@ -1103,20 +1087,17 @@ const questions = [
       qCard.classList.add("slideIn");
       setTimeout(() => qCard.classList.remove("slideIn"), 260);
     }
-
     function applyScores(scoreMap){
       for (const [k, v] of Object.entries(scoreMap)){
         if (state.scores[k] === undefined) state.scores[k] = 0;
         state.scores[k] += v;
       }
     }
-
     function chooseOption(optIndex){
       const q = questions[state.idx];
       const opt = q.options[optIndex];
       state.answers.push({ qIndex: state.idx, optIndex });
       applyScores(opt.scores);
-
       qCard.classList.add("slideOut");
       setTimeout(() => {
         state.idx += 1;
@@ -1128,7 +1109,6 @@ const questions = [
         }
       }, 220);
     }
-
     function pickWinner(){
       const priority = [SCENT.E, SCENT.S, SCENT.J, SCENT.H, SCENT.N, SCENT.X, SCENT.C, SCENT.Y];
       let bestScore = -Infinity;
@@ -1141,9 +1121,7 @@ const questions = [
       for (const p of priority){ if (bestIds.includes(p)) return p; }
       return bestIds[0];
     }
-
     function getScentById(id){ return scents.find(s => s.id === id); }
-
     function hexToRgba(hex, alpha){
       const h = hex.replace("#", "");
       const norm = h.length === 3 ? h.split("").map(c=>c+c).join("") : h;
@@ -1151,13 +1129,11 @@ const questions = [
       const r = (bigint >> 16) & 255, g = (bigint >> 8) & 255, b = bigint & 255;
       return `rgba(${r},${g},${b},${alpha})`;
     }
-
     function renderResult(){
       const winId = pickWinner();
       const s = getScentById(winId);
       $("#resultName").textContent = s.name;
       $("#resultFormula").textContent = s.formula;
-
       const pri = s.colorPrimary;
       const sec = s.colorSecondary || "#2B2B28";
       $("#swatchPrimary").style.background = pri;
@@ -1169,18 +1145,15 @@ const questions = [
       $("#resultDesc").textContent = s.desc;
       $("#topHint").textContent = "结果已生成";
     }
-
     function goLoadingThenResult(){
       showView("loading");
       $("#topHint").textContent = "正在为你调香……";
       setTimeout(() => { renderResult(); showView("result"); }, state.loadingMs);
     }
-
     $("#btn-start").addEventListener("click", () => {
       resetScores();
       showFlipThen(() => { showView("quiz"); renderQuestion(); $("#topHint").textContent = "正在作答"; });
     });
-
     $("#btn-retry").addEventListener("click", () => {
       resetScores();
       showView("quiz");
