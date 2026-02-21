@@ -713,6 +713,1154 @@
       position: relative;
       top: -2px;
     }
+
+    /* [补丁2] 卡片下方 note/desc 右侧被裁切 */
+    .resultMeta{
+      width: 100% !important;
+      max-width: 100% !important;
+      padding: 0 10px !important;
+      box-sizing: border-box;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+  }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <span class="seal" aria-hidden="true"></span>
+        <span>香笺｜测测你的今日古香方</span>
+      </div>
+      <div id="topHint">文人 · 雅事</div>
+    </div>
+
+    <div class="stage" id="stage">
+      <div class="overlay" id="overlay" aria-hidden="true">
+        <div class="flip" role="img" aria-label="翻页过渡动画">
+          <div class="sheet"></div>
+          <div class="page"></div>
+          <div class="caption">翻开香笺一页</div>
+        </div>
+      </div>
+
+      <section class="view active" id="view-cover">
+        <div class="coverWrap">
+          <div class="bookMock" aria-hidden="true">
+            <div class="bookTitle">
+              <span>《香笺》</span>
+              <span style="opacity:.72;letter-spacing:2px;">2026</span>
+            </div>
+            <div class="bookMain">
+              <div>
+                <h1>今日香事</h1>
+                <p>悠悠天地内，不死会“香”逢</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="intro">
+            <h2>香方测试</h2>
+            <p class="lead">
+              布局、立意、选材、配伍、醒香、题词、品味。<br/>
+              七问以后，与香相逢。
+            </p>
+            <div class="btnRow">
+              <button class="btn primary" id="btn-start">开始测试</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="view-quiz">
+        <div class="quizWrap">
+          <div class="progress">
+            <span id="progressText">1/7</span>
+            <div class="bar" aria-hidden="true"><i id="progressBar"></i></div>
+            <span id="progressMini">正在作答</span>
+          </div>
+
+          <div class="card" id="qCard">
+            <h3 class="qTitle" id="qTitle"></h3>
+            <div class="options" id="qOptions"></div>
+          </div>
+
+          <div class="note" style="text-align:center; padding-bottom:10px;">
+            单选 · 每题点击后自动进入下一题
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="view-loading">
+        <div class="loading">
+          <div class="dots" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+          <p>正在为你调香……</p>
+        </div>
+      </section>
+
+      <section class="view" id="view-result">
+        <div class="resultWrap">
+          <div class="resultCard" id="resultCard">
+            <div class="resultInner">
+              <div>
+                <p class="note" id="resultTag">今日香气</p>
+                <h2 class="resultName" id="resultName">—</h2>
+                <div class="swatches" aria-label="配色展示">
+                  <div class="blob blob-main" id="swatchPrimary"></div>
+                  <div class="blob-row">
+                    <div class="blob blob-small" id="swatchSecondary"></div>
+                    <div class="blob blob-small" id="swatchTertiary"></div>
+                    <div class="blob blob-small" id="swatchQuaternary"></div>
+                  </div>
+                  <div class="note" id="hexText" style="margin-left:6px;"></div>
+                </div>                
+              </div>
+
+              <div>
+                <p class="formula" id="resultFormula"></p>
+                <p class="note" id="resultSignature">《香笺》 · 你的今日古香方</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="resultMeta" id="resultDesc"></div>
+
+          <div class="footerBtns">
+            <button class="btn" id="btn-retry">再测一次</button>
+            <button class="btn primary" id="btn-save">保存卡片</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const SCENT = {
+      E: "e_litchi_pear",
+      H: "h_flower_lady",
+      S: "s_ersu_oldgame",
+      X: "x_snow_spring",
+      N: "n_southern_dream",
+      Y: "y_baby_scent",
+      C: "c_spring_night",
+      J: "j_lignum",
+    };
+
+    const scents = [
+      {
+        id: SCENT.E,
+        name: "鹅梨帐中香",
+        formula:
+          "亦称“南唐李主帐中香”，相传为李煜为周娥皇所制。\n" +
+          "沉香末一两、檀香末一钱，鹅梨十枚，以鹅梨刻去瓤核如小瓮。\n" +
+          "填入沉檀香末，仍以梨顶签盖，蒸三次，去皮研和，久窨可爇。\n" +
+          "初闻是鹅梨的清甜果香，其后是沉檀的温润奶甜。香气甜而不腻，柔美悠长。",
+        colorPrimary: "#CBB89D",
+        colorSecondary: "#2E2A25",
+        desc:
+          "像在南唐深宫的锦绣纱帐里，灯火渐昏沉了，帷幕后尚有一缕温甜未散。\n" +
+          "睡前熏点，让心绪从世俗烦扰间抽离，安神助眠。"
+      },
+      {
+        id: SCENT.H,
+        name: "花蕊夫人香",
+        formula:
+          "即花蕊夫人衙香，又称蜀主熏御衣香，相传为后蜀孟昶的贵妃、才女花蕊夫人自制。\n" +
+          "作为一款“衙香”（唐宋宫廷贵胄所用香品），用料极为考究。\n" +
+          "常用沉香、檀香、乳香、安息香、降真香、豆蔻、茅香等名贵香料，配伍严谨。\n" +
+          "沉檀打底，乳香与安息香托出馥郁柔润，中有豆蔻等辛香轻轻点醒，华贵而不浮躁。",
+        colorPrimary: "#E7B7C6",
+        colorSecondary: "#5A3A42",
+        desc:
+          "气节与才情并存，灵动隐现于安和，华贵中自有庄严。\n" +
+          "既有通经开窍之功，又有安神养性之效。"
+      },
+      {
+        id: SCENT.S,
+        name: "二苏旧局",
+        formula:
+          "现代文人陈云君托名苏轼、苏辙兄弟所创，以纪念兄弟之情与宋人风雅。\n" +
+          "以沉香、檀香、乳香、琥珀、蜂蜜、茉莉花为主：\n" +
+          "将沉、檀以蜂蜜调和为丸，再以外层的干茉莉花包裹为衣，形制雅致。\n" +
+          "初时是茉莉的清香，随后是乳香与琥珀带来的蜜甜与古旧感，最后归于沉檀的厚重儒雅。",
+        colorPrimary: "#B8C1A7",
+        colorSecondary: "#2F3A2F",
+        desc:
+          "香气儒雅清逸，使人如处于一场笔砚精良、高朋满座的雅集之中。\n" +
+          "读书、品茶、静坐。香烟袅袅，而心绪如尘埃落定。"
+      },
+      {
+        id: SCENT.X,
+        name: "雪中春信",
+        formula:
+          "出自《香乘》卷十八，传为苏东坡揣摩梅花冷韵，终得此方。\n" +
+          "香附子四两，郁金二两；沉檀香一两，用建茶煮过；麝香少许；樟脑一钱，用石灰制过；羊胫灰四两。\n" +
+          "原料研成粉末，用蜜炼调和均匀，焚香、窖藏之法如常。\n" +
+          "初闻有寒意料峭，随着温度升起，沉香的暖意与蜜香层层透出，香气渐转温润，于是春雪消融。",
+        colorPrimary: "#CFE2E6",
+        colorSecondary: "#1D2E33",
+        desc:
+          "踏雪寻梅，雪里逢春。遥知不是雪，为有暗香来。\n" +
+          "适合冬夜独坐、写字、看雪，无限清冷幽静间，觅得一枝春。"
+      },
+      {
+        id: SCENT.N,
+        name: "南朝遗梦",
+        formula:
+          "陈云君为追慕魏晋风度所创制的意蕴香，正合彼时名士在沉醉中对生命清醒的悲悯。\n" +
+          "以龙脑香、印度老山檀、桃花、公丁香、细辛等研粉，加炼蜜制成香丸，需窖藏一月。\n" +
+          "龙脑带来清冽凉意，先扫去浊气；而檀香与桃花的搭配，又在清冷中透出刹那的温润与绚烂。\n" +
+          "它不属于热烈的欢场，而属于月下的竹林，与名士们宽袍大袖的孤傲背影。",
+        colorPrimary: "#C7A56A",
+        colorSecondary: "#2C2417",
+        desc:
+          "纵情山水、挥麈谈玄者，怎会不知生命本如朝露般短暂。\n" +
+          "夜深读书，梦回南朝。而黄粱梦醒处，自是耳聪目明时。"
+      },
+      {
+        id: SCENT.Y,
+        name: "婴香",
+        formula:
+          "“婴香”之名见于陶弘景《真诰》。在宋代，它因“香圣”黄庭坚的推崇而风行一时。\n" +
+          "婴香，角沉三两末之，丁香四钱末之，龙脑七钱别研，麝香三钱别研，治弓甲香壹钱末之。\n" +
+          "右都研匀。入牙消半两，再研匀。入炼蜜六两，和匀。荫一月取出，丸作鸡头大。\n" +
+          "“神女及侍者，颜容莹朗，鲜彻如玉，五香馥芬，如烧香婴气者也。”",
+        colorPrimary: "#F1E6D8",
+        colorSecondary: "#6B4E3B",
+        desc:
+          "香气清雅，香韵持久。闻之喉中甘甜生津，心头如有暖流。\n" +
+          "比于赤子，纯真无邪。"
+      },
+      {
+        id: SCENT.C,
+        name: "春宵百媚香",
+        formula:
+          "相传为唐代杨贵妃佩香，是女性柔媚与富贵气象的极致表达。\n" +
+          "母丁香、白笃耨、詹糖香、龙脑、麝香、榄油、甲香、广排草须、花露、茴香、梨汁、玫瑰花、干木香花、龙脑、麝香。\n" +
+          "各香为末，同蜂苏合油、花露调和得法，捣数百下，密封入土窖藏十数日。取出，玉片隔火焚之，旖旎非常。\n" +
+          "在窖藏过程中，香料会产生奇妙的酯化反应，隐隐透出一丝令人沉醉的酒香，恰如“贵妃醉酒”的万种风情。",
+        colorPrimary: "#D9A1A8",
+        colorSecondary: "#3A1F23",
+        desc:
+          "是极致的盛唐宫廷香，丰盛、华丽，又带一点危险的柔软。\n" +
+          "回眸一笑百媚生，六宫粉黛无颜色。……云鬓花颜金步摇，芙蓉帐暖度春宵。"
+      },
+      {
+        id: SCENT.J,
+        name: "降真香",
+        formula:
+          "古人谓其“烧烟直上，感引鹤降”，能通天感神，是祭祀和醮星辰时的第一佳品。\n" +
+          "番降真香切作小片，以腊茶半两末之沸汤同浸一日。来朝取出风干。\n" +
+          "更以好酒半碗、蜜四两、青州枣五十个，于瓷器内同煮至干。收贮密存，徐徐烧取，香最清远。\n" +
+          "初燃并不甚香，但其妙用在“伴和诸香”。小儿佩之，能辟邪气。",
+        colorPrimary: "#D6D4C8",
+        colorSecondary: "#2B2B28",
+        desc:
+          "烟气劲道而悠远，仿佛能带着祈愿直上九霄。\n" +
+          "冥想、阅读、创作。心神集中，灵感清明。"
+      },
+    ];
+
+
+// 布局、立意、选材、配伍、醒香、题词、品味。
+const questions = [
+  { questionText: "是春夜吗，抑或冬日午后？祝你早上好，中午好，晚上好。你在哪里呀？", options: [
+    { label: "帷帐将合，床头只留一盏小灯，香气轻轻守在枕边", scores: { [SCENT.E]: 2, [SCENT.Y]: 1 } },
+    { label: "镜前更衣，衣香未散，像为一场未到的夜宴做准备", scores: { [SCENT.C]: 2, [SCENT.H]: 1 } },
+    { label: "案头是书与纸，灯下一坐，宁愿先让心落在字里", scores: { [SCENT.J]: 2, [SCENT.N]: 1 } },
+    { label: "窗外冷意入骨，屋内孤灯未灭，静到仿佛能听见雪落", scores: { [SCENT.X]: 2, [SCENT.N]: 1 } },
+  ]},
+
+  { questionText: "若此时一缕香在博山炉上崭露头角，你想和它说些什么吗？", options: [
+    { label: "把一整天的嘈杂关在门外，只求此刻心绪慢慢安稳下来", scores: { [SCENT.E]: 2, [SCENT.Y]: 1 } },
+    { label: "把仪态与气场拾起来，端庄而耀眼，好好走到灯下去", scores: { [SCENT.H]: 2, [SCENT.C]: 1 } },
+    { label: "让头脑清亮一点，在醒与梦之间，看清一件难以启齿的事", scores: { [SCENT.N]: 2, [SCENT.J]: 1 } },
+    { label: "不求答案，只想有一股温热在旁边陪着，不必多说话", scores: { [SCENT.S]: 2, [SCENT.Y]: 1 } },
+  ]},
+
+  { questionText: "要把哪一段回忆研成细末，调和进这一炉属于你的香中？", options: [
+    { label: "与几位最熟的朋友：人不多，足够把夜坐满，又不至于喧哗", scores: { [SCENT.S]: 2, [SCENT.H]: 1 } },
+    { label: "与床边那个人：不需多言，靠近一点，气息就彼此交织", scores: { [SCENT.E]: 2, [SCENT.C]: 1 } },
+    { label: "与整个家：灯光、脚步声、有人张罗，有人等你，像被缓缓接住", scores: { [SCENT.Y]: 2, [SCENT.E]: 1 } },
+    { label: "与自己：无人打扰，连呼吸都慢下来，像回到体内深处", scores: { [SCENT.X]: 2, [SCENT.N]: 1 } },
+  ]},
+
+  { questionText: "请想象你能看见气味的颜色吧——此时此刻，你看见的是哪一种？", options: [
+    { label: "冷白与淡蓝：像雪气、龙脑与清风，干净到几乎有点锋利", scores: { [SCENT.X]: 2, [SCENT.N]: 1 } },
+    { label: "绯与浅金：花瓣、酒意与耳畔轻声，华丽却不显得轻浮", scores: { [SCENT.C]: 2, [SCENT.H]: 1 } },
+    { label: "蜜色与木纹：旧书皮、茉莉与一点蜂蜡光，温润、儒雅又耐闻", scores: { [SCENT.S]: 2, [SCENT.E]: 1 } },
+    { label: "灰与烟影：香灰、药意和细细上升的火线，带着仪式感与分量", scores: { [SCENT.J]: 2, [SCENT.N]: 1 } },
+  ]},
+
+  { questionText: "香气正似花骨朵呢，你想让它在哪里绽放？", options: [
+    { label: "熏在衣襟与发梢：只有靠近的人才闻见，是得体又克制的亲近", scores: { [SCENT.H]: 2, [SCENT.C]: 1 } },
+    { label: "留在床头小几：只要自己闻得到，就像枕边轻轻说的一句安慰", scores: { [SCENT.E]: 2, [SCENT.Y]: 1 } },
+    { label: "安在案头一角：像给自己立一条看不见的界线，静坐片刻心就稳了", scores: { [SCENT.J]: 2, [SCENT.N]: 1 } },
+    { label: "任它在屋子里慢慢铺开：像一层薄薄的空气，把整晚都罩住", scores: { [SCENT.X]: 2, [SCENT.S]: 1 } },
+  ]},
+
+  { questionText: "给它取个名字吧，一闪念是一滴墨，请你为这一炉香题词——", options: [
+    { label: "“雪夜有暗香”——清冷到底，却总留一线不言说的希望", scores: { [SCENT.X]: 2, [SCENT.J]: 1 } },
+    { label: "“竹林月色”——醒与醉之间，清谈一场，倦极了也还清醒", scores: { [SCENT.N]: 2, [SCENT.X]: 1 } },
+    { label: "“衣香入骨”——华贵与分寸并存，像才情压住所有浮艳", scores: { [SCENT.H]: 2, [SCENT.S]: 1 } },
+    { label: "“家中暖灯”——有人走动，有人在等你回来，心自然就软了", scores: { [SCENT.Y]: 2, [SCENT.E]: 1 } },
+  ]},
+
+  { questionText: "所谓相逢，你识香时，香也识你，烟气里的你：", options: [
+    { label: "温暖而被照料：纯真、柔软，愿意被保护，也愿意去照亮别人", scores: { [SCENT.Y]: 2, [SCENT.E]: 1 } },
+    { label: "端庄而耀眼：才情自持，华贵，却始终知道自己的分寸", scores: { [SCENT.H]: 2, [SCENT.C]: 1 } },
+    { label: "清醒而纵情：知道自己在做什么，也愿意为之承担后果", scores: { [SCENT.N]: 2, [SCENT.J]: 1 } },
+    { label: "华丽而危险：欲望与美都不遮掩，像一场只在今夜发生的春宵", scores: { [SCENT.C]: 2, [SCENT.E]: 1 } },
+  ]},
+];
+
+
+    // tie-break: if highest score ties, prefer Q7's +2 scent
+    function pickWinner(){
+      const entries = Object.entries(state.scores); // [ [id, score], ... ]
+      let max = -Infinity;
+      for (const [, v] of entries) max = Math.max(max, v);
+
+      const tied = entries.filter(([, v]) => v === max).map(([k]) => k);
+      if (tied.length === 1) return tied[0];
+
+      // Q7 chosen option's main scent (the +2 one)
+      const q7 = questions[questions.length - 1];
+      const chosenIndex = state.answers[questions.length - 1];
+      const chosenScores = q7?.options?.[chosenIndex]?.scores || {};
+      const q7Main = Object.keys(chosenScores).find(k => chosenScores[k] === 2);
+
+      if (q7Main && tied.includes(q7Main)) return q7Main;
+
+      // fallback: stable order
+      const priority = [SCENT.E, SCENT.H, SCENT.S, SCENT.X, SCENT.N, SCENT.Y, SCENT.C, SCENT.J];
+      return tied.sort((a,b) => priority.indexOf(a) - priority.indexOf(b))[0];
+    }
+
+    const state = { idx: 0, scores: {}, answers: [], loadingMs: 1900 };
+
+    const $ = (sel) => document.querySelector(sel);
+    const views = { cover: $("#view-cover"), quiz: $("#view-quiz"), loading: $("#view-loading"), result: $("#view-result") };
+    const overlay = $("#overlay");
+    const qCard = $("#qCard"), qTitle = $("#qTitle"), qOptions = $("#qOptions");
+    const progressText = $("#progressText"), progressBar = $("#progressBar");
+
+    function showView(name){
+      Object.values(views).forEach(v => v.classList.remove("active"));
+      views[name].classList.add("active");
+    }
+
+    function resetScores(){
+      state.scores = {};
+      for (const s of scents) state.scores[s.id] = 0;
+      state.answers = [];
+      state.idx = 0;
+    }
+
+    function showFlipThen(fn){
+      overlay.classList.add("show");
+      setTimeout(() => { overlay.classList.remove("show"); fn?.(); }, 1100);
+    }
+
+    function updateProgress(){
+      const total = questions.length;
+      progressText.textContent = `${state.idx + 1}/${total}`;
+      progressBar.style.width = `${(state.idx / total) * 100}%`;
+    }
+
+    function renderQuestion(){
+      updateProgress();
+      const q = questions[state.idx];
+      qTitle.textContent = q.questionText;
+      qOptions.innerHTML = "";
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement("button");
+        btn.className = "opt";
+        btn.type = "button";
+        btn.textContent = opt.label;
+        btn.addEventListener("click", () => chooseOption(i));
+        qOptions.appendChild(btn);
+      });
+      qCard.classList.remove("slideOut");
+      qCard.classList.add("slideIn");
+      setTimeout(() => qCard.classList.remove("slideIn"), 260);
+    }
+
+    function applyScores(scoreMap){
+      for (const [k, v] of Object.entries(scoreMap)){
+        if (state.scores[k] === undefined) state.scores[k] = 0;
+        state.scores[k] += v;
+      }
+    }
+
+    function chooseOption(optIndex){
+      const q = questions[state.idx];
+      const opt = q.options[optIndex];
+      state.answers.push({ qIndex: state.idx, optIndex });
+      applyScores(opt.scores);
+
+      qCard.classList.add("slideOut");
+      setTimeout(() => {
+        state.idx += 1;
+        if (state.idx >= questions.length){
+          progressBar.style.width = "100%";
+          goLoadingThenResult();
+        } else {
+          renderQuestion();
+        }
+      }, 220);
+    }
+
+    function pickWinner(){
+      const priority = [SCENT.E, SCENT.S, SCENT.J, SCENT.H, SCENT.N, SCENT.X, SCENT.C, SCENT.Y];
+      let bestScore = -Infinity;
+      let bestIds = [];
+      for (const [id, sc] of Object.entries(state.scores)){
+        if (sc > bestScore){ bestScore = sc; bestIds = [id]; }
+        else if (sc === bestScore){ bestIds.push(id); }
+      }
+      if (bestIds.length === 1) return bestIds[0];
+      for (const p of priority){ if (bestIds.includes(p)) return p; }
+      return bestIds[0];
+    }
+
+    function getScentById(id){ return scents.find(s => s.id === id); }
+
+    function hexToRgba(hex, alpha){
+      const h = hex.replace("#", "");
+      const norm = h.length === 3 ? h.split("").map(c=>c+c).join("") : h;
+      const bigint = parseInt(norm, 16);
+      const r = (bigint >> 16) & 255, g = (bigint >> 8) & 255, b = bigint & 255;
+      return `rgba(${r},${g},${b},${alpha})`;
+    }
+
+    function renderResult(){
+      const winId = pickWinner();
+      const s = getScentById(winId);
+      $("#resultName").textContent = s.name;
+      $("#resultFormula").textContent = s.formula;
+
+      const pri = s.colorPrimary;
+      const sec = s.colorSecondary || "#2B2B28";
+      $("#swatchPrimary").style.background = pri;
+      $("#swatchSecondary").style.background = sec;
+      $("#swatchTertiary").style.background = hexToRgba(pri, 0.55);
+      $("#swatchQuaternary").style.background = hexToRgba(sec, 0.55);
+      // $("#hexText").textContent = `${pri}\n${sec}`;
+      $("#resultCard").style.borderColor = hexToRgba(pri, 0.35);
+      $("#resultDesc").textContent = s.desc;
+      $("#topHint").textContent = "结果已生成";
+    }
+
+    function goLoadingThenResult(){
+      showView("loading");
+      $("#topHint").textContent = "正在为你调香……";
+      setTimeout(() => { renderResult(); showView("result"); }, state.loadingMs);
+    }
+
+    $("#btn-start").addEventListener("click", () => {
+      resetScores();
+      showFlipThen(() => { showView("quiz"); renderQuestion(); $("#topHint").textContent = "正在作答"; });
+    });
+
+    $("#btn-retry").addEventListener("click", () => {
+      resetScores();
+      showView("quiz");
+      renderQuestion();
+      $("#topHint").textContent = "正在作答";
+    });
+
+    $("#btn-save").addEventListener("click", () => {
+      alert("V1 暂不支持一键导出图片。\\n\\n你可以：\\n1) 手机截图保存结果卡片\\n2) 电脑用系统截图工具截取卡片区域\\n\\nV2 将接入 html2canvas 生成 1080×1080 PNG。");
+    });
+
+    resetScores();
+  </script>
+</body>
+</html>
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 8px 2px 18px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      user-select:none;
+    }
+
+    .seal{
+      width: 18px; height: 18px;
+      border-radius: 4px;
+      background: rgba(150, 25, 25, .65);
+      box-shadow: 0 6px 18px var(--shadow);
+    }
+
+    .stage{
+      position: relative;
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.60), rgba(255,255,255,.44));
+      box-shadow: 0 16px 38px var(--shadow);
+      overflow: hidden;
+    }
+
+    .view{
+      min-height: 620px;
+      padding: 30px;
+      display:none;
+    }
+    .view.active{ display:block; }
+
+    /* --- Cover --- */
+    .coverWrap{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 22px;
+      align-items:center;
+      min-height: 620px;
+    }
+    @media (max-width: 860px){
+      .coverWrap{ grid-template-columns: 1fr; }
+    }
+
+    .bookMock{
+      position: relative;
+      width: min(420px, 78vw);
+      aspect-ratio: 3/4;
+      margin: 0 auto;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(30,27,22,.08), rgba(255,255,255,.35));
+      border: 1px solid var(--stroke);
+      box-shadow: 0 18px 42px var(--shadow);
+      overflow:hidden;
+    }
+    .bookMock::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(900px 520px at 40% 20%, rgba(255,255,255,.55), transparent 60%),
+        repeating-linear-gradient(90deg, rgba(30,27,22,.05) 0 1px, transparent 1px 7px);
+      opacity:.55;
+      pointer-events:none;
+    }
+    .bookTitle{
+      position:absolute;
+      left: 18px;
+      top: 16px;
+      right: 18px;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      color: rgba(30,27,22,.78);
+      font-size: 16px;
+      letter-spacing: 3px;
+    }
+    .bookMain{
+      position:absolute;
+      inset: 0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding: 26px;
+    }
+    .bookMain h1{
+      margin:0;
+      font-weight: 600;
+      font-size: clamp(28px, 4vw, 44px);
+      letter-spacing: 6px;
+      line-height: 1.15;
+    }
+    .bookMain p{
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      letter-spacing: 1px;
+    }
+
+    .intro{
+      padding: 8px 4px;
+    }
+    .intro h2{
+      margin:0 0 10px;
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+    .intro .lead{
+      margin:0 0 16px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    .btnRow{ display:flex; gap:12px; flex-wrap:wrap; margin-top: 18px; }
+    .btn{
+      appearance:none;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.55);
+      color: var(--ink);
+      padding: 12px 16px;
+      border-radius: 999px;
+      cursor:pointer;
+      font-size: 14px;
+      letter-spacing: .6px;
+      transition: transform .12s var(--ease), background .12s var(--ease), border-color .12s var(--ease);
+      user-select:none;
+    }
+    .btn:hover{ background: rgba(255,255,255,.70); border-color: rgba(30,27,22,.22); }
+    .btn:active{ transform: translateY(1px); }
+    .btn.primary{
+      background: rgba(30,27,22,.92);
+      color: rgba(255,255,255,.92);
+      border-color: rgba(30,27,22,.92);
+    }
+    .btn.primary:hover{ background: rgba(30,27,22,.86); }
+
+    /* --- Transition overlay (book flip) --- */
+    .overlay{
+      position:absolute;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      background: radial-gradient(1200px 600px at 50% 15%, rgba(255,255,255,.62), rgba(246,241,231,.86));
+      z-index: 9;
+    }
+    .overlay.show{ display:flex; }
+
+    .flip{
+      width: min(520px, 86vw);
+      aspect-ratio: 4/3;
+      position: relative;
+      perspective: 1000px;
+    }
+    .flip .sheet{
+      position:absolute;
+      inset: 0;
+      border-radius: 18px;
+      border: 1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(255,255,255,.88), rgba(255,255,255,.70));
+      box-shadow: 0 18px 42px var(--shadow);
+      overflow:hidden;
+    }
+    .flip .sheet::before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(900px 520px at 40% 20%, rgba(255,255,255,.6), transparent 62%),
+        repeating-linear-gradient(0deg, rgba(30,27,22,.03) 0 1px, transparent 1px 8px);
+      opacity:.75;
+    }
+    .flip .page{
+      position:absolute;
+      inset: 0;
+      transform-origin: left center;
+      transform: rotateY(0deg);
+      border-radius: 18px;
+      background: linear-gradient(90deg, rgba(255,255,255,.74), rgba(255,255,255,.40));
+      border-left: 1px solid rgba(30,27,22,.10);
+      box-shadow: 0 12px 26px rgba(30,27,22,.10);
+      animation: pageTurn 1.05s var(--ease) forwards;
+    }
+    .flip .page::after{
+      content:"";
+      position:absolute; inset:0;
+      background: radial-gradient(900px 520px at 20% 20%, rgba(255,255,255,.7), transparent 60%);
+      opacity:.55;
+    }
+    .flip .caption{
+      position:absolute;
+      top: 50%;
+      left: 0; right: 0;
+      transform: translateY(-50%);
+      text-align:center;
+      color: rgba(30,27,22,.78);
+      letter-spacing: 2px;
+      font-size: 20px;
+    }
+    @keyframes pageTurn{
+      0%{ transform: rotateY(0deg); opacity: 1; }
+      45%{ transform: rotateY(-65deg); opacity: 1; }
+      100%{ transform: rotateY(-120deg); opacity: 0; }
+    }
+
+    /* --- Quiz --- */
+    .quizWrap{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      min-height: 620px;
+    }
+    .progress{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      color: var(--muted);
+      font-size: 14px;
+      letter-spacing: .6px;
+      gap: 10px;
+    }
+    .bar{
+      flex:1;
+      height: 6px;
+      background: rgba(30,27,22,.08);
+      border-radius: 999px;
+      overflow:hidden;
+      border: 1px solid rgba(30,27,22,.06);
+    }
+    .bar > i{
+      display:block;
+      height:100%;
+      width:0%;
+      background: rgba(30,27,22,.35);
+      border-radius: 999px;
+      transition: width .35s var(--ease);
+    }
+
+    .card{
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.56);
+      box-shadow: 0 12px 30px var(--shadow);
+      padding: 22px;
+    }
+    .qTitle{
+      margin:0 0 14px;
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      line-height: 1.4;
+    }
+    .options{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    @media (max-width: 640px){
+      .options{ grid-template-columns: 1fr; }
+    }
+    .opt{
+      text-align:left;
+      padding: 14px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(30,27,22,.12);
+      background: rgba(255,255,255,.54);
+      cursor:pointer;
+      transition: transform .12s var(--ease), background .12s var(--ease), border-color .12s var(--ease);
+      line-height: 1.55;
+      letter-spacing: .4px;
+    }
+    .opt:hover{ background: rgba(255,255,255,.70); border-color: rgba(30,27,22,.22); }
+    .opt:active{ transform: translateY(1px); }
+
+    .slideOut{
+      animation: slideOut .22s var(--ease) forwards;
+    }
+    .slideIn{
+      animation: slideIn .24s var(--ease) forwards;
+    }
+    @keyframes slideOut{
+      to { transform: translateX(-10px); opacity: 0; }
+    }
+    @keyframes slideIn{
+      from { transform: translateX(10px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* --- Loading --- */
+    .loading{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      min-height: 620px;
+      gap: 14px;
+      text-align:center;
+    }
+    .dots{
+      display:flex; gap: 8px;
+    }
+    .dots span{
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: rgba(30,27,22,.35);
+      animation: pulse 1s var(--ease) infinite;
+      opacity: .45;
+    }
+    .dots span:nth-child(2){ animation-delay: .12s; }
+    .dots span:nth-child(3){ animation-delay: .24s; }
+    @keyframes pulse{
+      0%,100%{ transform: translateY(0); opacity:.35; }
+      50%{ transform: translateY(-4px); opacity:.75; }
+    }
+    .loading p{
+      margin:0;
+      color: var(--muted);
+      letter-spacing: 2px;
+      font-size: 14px;
+    }
+
+    /* --- Result --- */
+    .resultWrap{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      min-height: 620px;
+      align-content:start;
+    }
+
+    .resultCard{
+      width: min(540px, 92vw);
+      aspect-ratio: 1 / 1;
+      margin: 0 auto;
+      border-radius: 22px;
+      border: 1px solid rgba(30,27,22,.14);
+      background: rgba(255,255,255,.58);
+      box-shadow: 0 18px 42px var(--shadow);
+      padding: 22px;
+      position: relative;
+      overflow:hidden;
+    }
+    .resultCard::before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(900px 520px at 40% 10%, rgba(255,255,255,.65), transparent 62%),
+        repeating-linear-gradient(0deg, rgba(30,27,22,.02) 0 1px, transparent 1px 9px);
+      opacity:.70;
+      pointer-events:none;
+    }
+    .resultInner{
+      position: relative;
+      height:100%;
+      display:flex;
+      flex-direction:column;
+        justify-content:flex-start;
+      gap: 10px;
+      padding-bottom: 40px; 
+    }
+    .resultInner > div:last-child{
+      margin-top: auto;
+    }
+    .resultName{
+      margin:0;
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      line-height: 1.2;
+    }
+    .swatches{
+      display:flex;
+      align-items:center;
+      gap: 20px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .blob-row{
+      display:flex;
+      gap: 20px;
+      align-items:center;
+    }
+    .blob{
+      position: relative;
+      overflow: visible;
+      isolation: isolate;
+      border: none;
+      box-shadow: none;
+      opacity: .56;
+      background: inherit;
+      filter: saturate(1.03);
+    }
+    .blob::before{
+      content:"";
+      position:absolute;
+      border-radius: inherit;
+      background: inherit;
+      z-index: -2;
+      pointer-events:none;
+    }
+    .blob::after{
+      content:"";
+      position:absolute;
+      background: inherit;
+      z-index: 1;
+      pointer-events:none;
+    }
+    .blob-main{
+      width: 96px;
+      height: 96px;
+      border-radius: 51% 49% 50% 50% / 50% 52% 48% 50%;
+      transform: rotate(-2deg);
+    }
+    .blob-main::before{
+      inset: -28px;
+      border-radius: inherit;
+      opacity: .22;
+      filter: blur(18px) saturate(0.94);
+      transform: scale(1.08) rotate(-4deg);
+    }
+    .blob-main::after{
+      inset: 20% 20% 22% 18%;
+      border-radius: 62% 38% 54% 46% / 46% 58% 42% 54%;
+      opacity: .68;
+      filter: blur(1.8px) saturate(1.08);
+      transform: translate(-2px, 2px) rotate(5deg);
+    }
+    .blob-small{
+      width: 38px;
+      height: 34px;
+      border-radius: 62% 38% 54% 46% / 50% 60% 40% 50%;
+      transform: rotate(10deg);
+      opacity: .64;
+    }
+    .blob-small::before{
+      inset: -8px;
+      border-radius: inherit;
+      opacity: .18; 
+      filter: blur(6px) saturate(0.96); 
+      transform: scale(1.04) rotate(-2deg);
+    }
+    .blob-small::after{
+      inset: 22% 22% 24% 20%;
+      border-radius: 58% 42% 55% 45% / 48% 56% 44% 52%;
+      opacity: .62;
+      filter: blur(1px) saturate(1.05);
+      transform: translate(-1px, 1px) rotate(4deg);
+    }
+     #swatchSecondary{
+      transform: rotate(12deg);
+      border-radius: 60% 40% 55% 45% / 46% 56% 44% 54%;
+    }
+    #swatchSecondary::after{
+      border-radius: 56% 44% 52% 48% / 46% 58% 42% 54%;
+      transform: translate(-1px, 1px) rotate(5deg);
+    }
+    #swatchTertiary{
+      transform: rotate(-6deg);
+      border-radius: 48% 52% 42% 58% / 55% 45% 60% 40%;
+    }
+    #swatchQuaternary{
+      transform: rotate(4deg);
+      border-radius: 66% 34% 58% 42% / 48% 62% 38% 52%;
+    }
+    #swatchTertiary::after,
+    #swatchQuaternary::after{
+      inset: 10% 10% 12% 10%;
+      opacity: .24;
+      filter: blur(1.8px) saturate(1.0);
+    }
+    .formula{
+      margin: 0;
+      color: rgba(30,27,22,.72);
+      line-height: 1.8;
+      font-size: 14px;
+      letter-spacing: .4px;
+      white-space: pre-line;
+    }
+    .note{
+      margin: 0;
+      color: rgba(30,27,22,.56);
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+    #hexText { white-space: pre-line; }
+    .resultMeta{
+      width: min(680px, 92vw);
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+      letter-spacing: .3px;
+      padding: 0 6px;
+      white-space: pre-line;
+    }
+    .footerBtns{
+      width: min(680px, 92vw);
+      margin: 0 auto;
+      display:flex;
+      justify-content:center;
+      gap: 12px;
+      flex-wrap:wrap;
+      padding-bottom: 8px;
+    }
+    /* Mobile result adaptation  */
+    @media (max-width: 768px){
+    .shell{
+      padding: 14px 12px 18px;
+    }
+    .topbar{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: nowrap;
+    }
+    .brand{
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+    .brandText{
+      white-space: nowrap; 
+      overflow: hidden;
+      text-overflow: ellipsis; 
+      display: block;
+      line-height: 1.2;
+      font-size: 13px;
+    }
+    .topHint{
+      flex: 0 0 auto;
+      white-space: nowrap;
+      justify-self: auto;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .resultWrap,
+    .resultPanel,
+    .resultSection{
+      width: 100%;
+      max-width: 100%;
+    }
+    .resultShell{
+      padding: 12px 8px;
+    }
+    .resultCard{
+      width: calc(100% - 4px);
+      margin: 0 auto;
+    }
+    .resultInner{
+      padding: 16px 16px 14px;
+      gap: 8px;
+      padding-bottom: 20px; 
+    }
+    .eyebrow,
+    .resultLabel{
+      font-size: 12px;
+      letter-spacing: 1px;
+      margin-bottom: 2px;
+    }
+    .resultName{
+      font-size: 24px;
+      line-height: 1.15;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .swatches{
+      margin-top: 4px;
+      gap: 10px;
+      display: inline-flex;
+      max-width: 100%;
+    }
+    .blob-main{
+      width: 70px;
+      height: 70px;
+    }
+    .blob-row{
+      gap: 8px;
+    }
+    .blob{
+      overflow: hidden;
+    }
+    #swatchSecondary::before,
+    #swatchQuaternary::before{
+      inset: -3px;
+      opacity: .08; 
+      filter: blur(3px); 
+    }
+    #swatchSecondary::after,
+    #swatchQuaternary::after{
+      inset: 16% 16% 18% 16%;
+      opacity: .42;
+      filter: blur(1.2px) saturate(1.01);
+    }
+    #hexText{
+      width: 100%;
+      margin-left: 0 !important;
+      margin-top: 6px;
+      font-size: 12px;
+      line-height: 1.35;
+      color: var(--muted);
+      word-break: break-all;
+    }
+    .formula{
+      margin-top: 10px;
+      font-size: 12px;
+      line-height: 1.65;
+      letter-spacing: 0;
+    }
+    .formula.is-clamped{
+      display: -webkit-box;
+      -webkit-line-clamp: 8; 
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .note,
+    #resultSignature{
+      margin-top: 8px;
+      font-size: 11px;
+      line-height: 1.3;
+      color: rgba(30,27,22,.55);
+    }
+    .resultMeta{
+      margin-top: 12px;
+      font-size: 13px;
+      line-height: 1.8;
+      padding: 0 2px;
+    }
+    .actions{
+      margin-top: 14px;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: nowrap;
+    }
+    .btn{
+      min-width: 0;
+      padding: 12px 18px;
+      font-size: 14px;
+      border-radius: 999px;
+    }
+    .btn.primary{
+      padding-inline: 20px;
+    }
+    .footNote,
+    .resultFootnote{
+      margin-top: 12px;
+      font-size: 11px;
+      line-height: 1.45;
+      text-align: center;
+    }
+    .resultCard, .resultInner{
+      box-sizing: border-box;
+    }
+    .formula, .resultMeta{
+      word-break: break-word;
+    }
+    /* [补丁1] 卡片底部 signature 被裁切 */
+    .resultInner{
+      padding-bottom: 28px !important;
+    }
+    #resultSignature{
+      padding-bottom: 4px;
+      line-height: 1.35;
+      position: relative;
+      top: -2px;
+    }
     /* [补丁2] 卡片下方 note/desc 右侧被裁切 */
     .resultMeta{
       width: 100% !important;
